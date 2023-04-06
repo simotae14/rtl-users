@@ -21,7 +21,12 @@ test('it calls onUserAdd when the form is submitted', () => {
   // 1. Render the component
   render(<UserForm onUserAdd={mock} />);
   // 2. Find the two inputs
-  const [nameInput, emailInput] = screen.getAllByRole('textbox');
+  const nameInput = screen.getByRole('textbox', {
+    name: /name/i
+  });
+  const emailInput = screen.getByRole('textbox', {
+    name: /email/i
+  });
 
   // 3. Simulate typing in a name
   user.click(nameInput);
