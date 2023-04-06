@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { user } from '@testing-library/user-event';
+import user from '@testing-library/user-event';
 
 import UserForm from './UserForm';
 
@@ -14,4 +14,33 @@ test('it shows two inputs and a button', () => {
   // what we expected it to do
   expect(inputs).toHaveLength(2);
   expect(button).toBeInTheDocument();
+});
+
+test('it calls onUserAdd when the form is submitted', () => {
+  // NOT THE BEST IMPLEMENTATION
+  const argList = [];
+  const callback = (...args) => {
+    argList.push(args);
+  }
+  // 1. Render the component
+  render(<UserForm onUserAdd={callback} />);
+  // 2. Find the two inputs
+  const [nameInput, emailInput] = screen.getAllByRole('textbox');
+
+  // 3. Simulate typing in a name
+  user.click(nameInput);
+  user.keyboard('jane');
+  // 4. Simulate typing in an email
+  user.click(emailInput);
+  user.keyboard('jane@jane.com');
+
+  // 5. Find the button
+  const button = screen.getByRole('button');
+  // 6. Simulate clicking the button to submit form
+  user.click(button);
+
+  // 7. Assertion to make sure 'onUserAdd' gets called with email/name
+  expect(argList).toHaveLength(1);
+  expect(argList[0][0]).toEqual({name: 'jane', email: 'jane@jane.com'});
+
 });
